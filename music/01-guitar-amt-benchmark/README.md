@@ -31,6 +31,7 @@ I evaluated **5 state-of-the-art deep learning architectures** across 10 diverse
 ├── README.md               # Project overview and documentation
 ├── ARTICLE-EN.md           # Full English technical article
 ├── ARTICLE-TR.md           # Full Turkish technical article
+├── images/                 # High-resolution diagrams & visual assets (SVG & PNG)
 ├── test_dataset/
 │   └── guitar/             # 10 audio WAV files & JAMS sensor annotations (GuitarSet)
 └── scripts/

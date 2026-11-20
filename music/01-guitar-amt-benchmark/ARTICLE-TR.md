@@ -26,6 +26,8 @@ Bu çalışmada; **Spotify**, **ByteDance**, **YourMT3+ (Transformer)**, **Torch
 
 Karşılaştırdığım 5 model, derin öğrenmenin 4 farklı ekolünü temsil ediyor:
 
+![5 Derin Öğrenme AMT Mimarisinin Karşılaştırması](./images/figure-01-amt-architectures-tr.png)
+
 ```mermaid
 flowchart TD
     Audio["Girdi Sesi (Akustik Gitar WAV)"] --> BP["Spotify Basic Pitch\n(Harmonic CNN / TFLite)"]

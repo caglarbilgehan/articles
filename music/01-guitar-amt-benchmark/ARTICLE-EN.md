@@ -30,6 +30,8 @@ Here is what I discovered.
 
 The models I evaluated represent four distinct paradigms in audio machine learning:
 
+![Comparison of 5 AMT Deep Learning Architectures](./images/figure-01-amt-architectures-en.png)
+
 ```mermaid
 flowchart TD
     Audio["Input Audio (Acoustic Guitar WAV)"] --> BP["Spotify Basic Pitch\n(Harmonic CNN / TFLite)"]
