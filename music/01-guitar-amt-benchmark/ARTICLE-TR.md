@@ -2,6 +2,8 @@
 
 > **Alt Başlık:** *Spotify Basic Pitch, Google YourMT3+, ByteDance CRNN, TorchCREPE ve Omnizart'ı 10 Farklı Gitar Kaydı ve 1.543 Gerçek Nota Üzerinde Test Ettim. İşte Elde Ettiğim Sonuçlar, Karşılaştığım Sürprizler ve Mühendislik Çıkarımlarım.*
 
+> 📦 **Açık Kaynak Kod Deposu:** Makalede kullanılan tüm test kodları, benchmark betikleri ve veri seti referansları [GitHub: caglarbilgehan/articles (01-guitar-amt-benchmark)](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark) üzerinde yayımlanmıştır.
+
 ---
 
 ## 🎧 Giriş: Sesten MIDI'ye Dönüşüm Neden Hâlâ Müzik Teknolojisinin "Kutsal Kasesi"?
@@ -138,7 +140,7 @@ Omnizart Stream modu, CPU üzerinde ~13.5 saniye gibi yavaş bir süreyle çalı
 
 Otomatik Müzik Transkripsiyonu artık salt bir akademik araştırma konusu olmaktan çıkıp prodüksiyon seviyesinde pratik araçlara dönüşmüş durumda. Ancak gitar gibi artikülasyonu yüksek enstrümanlarda genelleyici Transformer mimarilerinin (YourMT3+) tel damping'ini yakalamadaki ezici üstünlüğü, geleceğin müzik yapay zekâsında sekans modellerinin baskın olacağını bana net bir şekilde gösterdi.
 
-*Projede kullandığım tüm benchmark scriptlerine, veri seti referanslarına ve zaman damgalı MIDI arşivlerine GitHub depomdan ulaşabilirsiniz.*
+*Projede kullandığım tüm benchmark scriptlerine, veri seti referanslarına ve zaman damgalı MIDI arşivlerine [GitHub Depomdan: 01-guitar-amt-benchmark](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark) ulaşabilirsiniz.*
 
 ---
 

@@ -2,6 +2,8 @@
 
 > **Subtitle:** *I benchmarked Spotify Basic Pitch, Google YourMT3+, ByteDance CRNN, TorchCREPE, and Omnizart across 10 distinct acoustic guitar recordings and 1,543 ground-truth notes. Here is what surprised me, what failed, and the engineering insights I uncovered.*
 
+> 📦 **Open Source Repository:** All reproducible code, benchmark scripts, and datasets for this article are hosted on [GitHub: caglarbilgehan/articles (01-guitar-amt-benchmark)](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark).
+
 ---
 
 ## 🎧 Introduction: Why Audio-to-MIDI Remains the "Holy Grail" of Music Tech
@@ -150,7 +152,7 @@ Automatic Music Transcription has officially crossed the threshold from speculat
 
 My benchmark demonstrates that while lightweight CNNs like **Spotify Basic Pitch** deliver incredible speed and onset sensitivity, **sequence-to-sequence Transformers like YourMT3+ represent the true future of music transcription**. Their ability to model the complex temporal dynamics of instrument-specific articulations—such as the muting and damping of acoustic guitar strings—sets a new benchmark for the field.
 
-*All benchmark scripts, evaluation pipelines, and timestamped output MIDIs from this study are open-sourced in my GitHub repository.*
+*All benchmark scripts, evaluation pipelines, and timestamped output MIDIs from this study are open-sourced in my [GitHub Repository: 01-guitar-amt-benchmark](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark).*
 
 ---
 
