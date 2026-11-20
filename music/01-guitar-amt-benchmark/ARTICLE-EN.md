@@ -6,6 +6,10 @@
 
 ---
 
+![Automatic Music Transcription on Acoustic Guitar](./images/article-image.jpg)
+
+---
+
 ## 🎧 Introduction: Why Audio-to-MIDI Remains the "Holy Grail" of Music Tech
 
 Listening to a complex musical recording and faithfully transcribing every single note, chord, and nuance into MIDI or sheet music demands years of rigorous ear training even for seasoned musicians. In the world of machine learning and audio signal processing, this task is known as **Automatic Music Transcription (AMT)**.

@@ -6,6 +6,10 @@
 
 ---
 
+![Akustik Gitarda Otomatik Müzik Transkripsiyonu](./images/article-image.jpg)
+
+---
+
 ## 🎧 Giriş: Sesten MIDI'ye Dönüşüm Neden Hâlâ Müzik Teknolojisinin "Kutsal Kasesi"?
 
 Bir müzik kaydını dinleyip piyanoda veya gitarda çalınan notaları kusursuz bir şekilde MIDI'ye (veya notaya) dökmek insan beyni için bile yıllar süren solfej ve armoni eğitimi gerektirir. Yapay zekâ ve derin öğrenme dünyasında bu probleme **Otomatik Müzik Transkripsiyonu (Automatic Music Transcription - AMT)** deniyor.
