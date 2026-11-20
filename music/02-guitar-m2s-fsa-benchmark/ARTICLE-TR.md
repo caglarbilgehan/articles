@@ -219,9 +219,11 @@ Bu dosya modern masaüstü notasyon programlarında veya tarayıcı tabanlı **O
 2. **Açık Kaynakta Zirve Biyomekanik Viterbi:** Ağır derin öğrenme ağırlıkları yerine fiziksel kısıtları modelleyen Viterbi dinamik programlaması (`gtrsnipe`), hem deterministiktir hem de %61 doğrulukla çalınabilir en akıcı rotayı üretir.
 3. **Evrensel Standarttan Şaşmayın:** W3C MusicXML `<technical>` etiketleri sayesinde kullanıcı hiçbir özel programa bağımlı kalmadan notasını dilediği yazılımda açabilir.
 
+*Projede kullandığım tüm benchmark scriptlerine, FSA adaptörlerine, test veri setine ve üretilen MusicXML skorlarına [GitHub Depomdan: 02-guitar-m2s-fsa-benchmark](https://github.com/caglarbilgehan/articles/tree/main/music/02-guitar-m2s-fsa-benchmark) ulaşabilirsiniz.*
+
 ---
 
-## 📚 Akademik ve Teknik Kaynaklar
+## 📚 Akademik Referanslar ve Kaynakça
 
 1. **GuitarSet Doğrulama Veri Seti:**  
    Xi, Q., Bittner, R. M., Pauwels, J., Ye, X., & Bello, J. P. (2018). *GuitarSet: A Dataset for Guitar Transcription.* In Proceedings of the 19th International Society for Music Information Retrieval Conference (ISMIR 2018), Paris, France. DOI: [10.5281/zenodo.3371780](https://doi.org/10.5281/zenodo.3371780)
@@ -237,7 +239,3 @@ Bu dosya modern masaüstü notasyon programlarında veya tarayıcı tabanlı **O
    - Scott, V. R. (2024). *gtrsnipe: Akıllı Gitar Klavye Haritalama ve Tablature Üretimi.* [GitHub Deposu](https://github.com/scottvr/gtrsnipe)
    - Chen, N. (2023). *tuttut: Polifonik MIDI'den Telli Çalgı Tablature'ına Dönüştürücü.* [GitHub Deposu](https://github.com/natecdr/tuttut)
    - Sonata165 (2024). *GuitarArranger: Algoritmik Gitar Aranjmanı ve Klavye Düzenleme.* [GitHub Deposu](https://github.com/Sonata165/GuitarArranger)
-
----
-
-*Tüm benchmark betikleri, adaptörler ve test veri seti [GitHub](https://github.com/caglarbilgehan/articles/tree/main/music/02-guitar-m2s-fsa-benchmark) üzerinde tamamen açık kaynak olarak incelenebilir.*

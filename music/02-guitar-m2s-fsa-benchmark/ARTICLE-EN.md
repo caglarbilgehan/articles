@@ -221,6 +221,8 @@ If you are building an automated music transcription system, tab generator, or d
 2. **Biomechanical Viterbi is the Current Open-Source King:** Deep learning models for tab estimation (like TabCNN) often require heavy checkpoints and can hallucinate impossible fingerings on out-of-distribution audio. `gtrsnipe`'s deterministic biomechanical dynamic programming delivers superior, explainable, and 100% playable results with zero model weight overhead.
 3. **Adopt W3C Open Standards for Maximum Interoperability:** Building on open standards ensures your scores remain accessible everywhere. MusicXML `<technical><string>` and `<fret>` tags are natively supported across major desktop scorewriters, mobile viewers, and browser-based SVG renderers like OSMD.
 
+*All benchmark scripts, FSA adapters, test datasets, and generated MusicXML scores from this study are open-sourced in my [GitHub Repository: 02-guitar-m2s-fsa-benchmark](https://github.com/caglarbilgehan/articles/tree/main/music/02-guitar-m2s-fsa-benchmark).*
+
 ---
 
 ## 📚 Academic References
@@ -239,7 +241,3 @@ If you are building an automated music transcription system, tab generator, or d
    - Scott, V. R. (2024). *gtrsnipe: Intelligent Guitar Fretboard Mapping and Tablature Generation.* [GitHub Repository](https://github.com/scottvr/gtrsnipe)
    - Chen, N. (2023). *tuttut: Polyphonic MIDI to Fretted Instrument Tablature.* [GitHub Repository](https://github.com/natecdr/tuttut)
    - Sonata165 (2024). *GuitarArranger: Algorithmic Guitar Arrangement and Fretboard Voicing.* [GitHub Repository](https://github.com/Sonata165/GuitarArranger)
-
----
-
-*All benchmark scripts, adapters, evaluation code, and test datasets are fully open-source and reproducible on [GitHub](https://github.com/caglarbilgehan/articles/tree/main/music/02-guitar-m2s-fsa-benchmark).*
