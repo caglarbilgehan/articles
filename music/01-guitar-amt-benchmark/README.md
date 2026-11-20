@@ -27,7 +27,7 @@ I evaluated **5 state-of-the-art deep learning architectures** across 10 diverse
 ## 📂 Directory Structure
 
 ```
-automatic-music-transcription-benchmark/
+01-guitar-amt-benchmark/
 ├── README.md               # Project overview and documentation
 ├── ARTICLE-EN.md           # Full English technical article
 ├── ARTICLE-TR.md           # Full Turkish technical article

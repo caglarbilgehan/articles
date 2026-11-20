@@ -4,8 +4,9 @@ A curated repository of technical articles, deep learning benchmarks, and resear
 
 ## 📚 Published & In-Progress Articles
 
-* 🎸 **[Automatic Music Transcription (AMT) Benchmark on Acoustic Guitar](./music/automatic-music-transcription-benchmark/README.md)**
+### 🎵 Music Information Retrieval & Audio AI
+* 🎸 **[01. Automatic Music Transcription (AMT) Benchmark on Acoustic Guitar](./music/01-guitar-amt-benchmark/README.md)**
   * Comparative evaluation of 5 Deep Learning architectures (Spotify Basic Pitch, YourMT3+, ByteDance CRNN, TorchCREPE, Omnizart) on NYU MARL GuitarSet (1,543 Ground Truth Notes).
-  * 🇬🇧 [English Article (Medium)](./music/automatic-music-transcription-benchmark/ARTICLE-EN.md)
-  * 🇹🇷 [Türkçe Makale Taslağı](./music/automatic-music-transcription-benchmark/ARTICLE-TR.md)
-  * 🧪 [Benchmark Scripts & Datasets](./music/automatic-music-transcription-benchmark/scripts/)
+  * 🇬🇧 [English Article (Medium)](./music/01-guitar-amt-benchmark/ARTICLE-EN.md)
+  * 🇹🇷 [Türkçe Makale Taslağı](./music/01-guitar-amt-benchmark/ARTICLE-TR.md)
+  * 🧪 [Benchmark Scripts & Datasets](./music/01-guitar-amt-benchmark/scripts/)
