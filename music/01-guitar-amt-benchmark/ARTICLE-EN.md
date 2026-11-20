@@ -94,6 +94,8 @@ For ground truth, I used **GuitarSet**, published by the New York University Mus
 
 ## 🏆 The Grand SOTA Leaderboard (5-Run Averaged Metrics)
 
+![Table 1: AMT SOTA Leaderboard](./images/table-01-sota-leaderboard-en.png)
+
 | Rank | Architecture | Solo Onset Rec. | Solo Pitch F1 | Solo Strict F1 | Comp Onset Rec. | Comp Pitch F1 | Comp Strict F1 | Avg Inference Time |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 🥇 | **YourMT3+ (Transformer)** | 89.3% | **90.8%** | **81.9%** | 86.3% | **85.9%** | **73.9%** | 1.63s (GPU) |
@@ -138,6 +140,8 @@ Omnizart Stream mode ran purely on the CPU (~13.5s per track). While versatile o
 ---
 
 ## 🛠 Which Model Should You Use? (Practical Decision Matrix)
+
+![Table 2: Practical Decision Matrix](./images/table-02-decision-matrix-en.png)
 
 | Production Use Case | Recommended Model | Why? |
 | :--- | :---: | :--- |

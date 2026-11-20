@@ -90,6 +90,8 @@ Referans ses kaynağı olarak New York Üniversitesi Müzik ve Ses Araştırma L
 
 ## 🏆 Büyük Karşılaştırma Tablosu (5 Tekrarlı Ortalama)
 
+![Tablo 1: AMT SOTA Liderlik Tablosu](./images/table-01-sota-leaderboard-tr.png)
+
 | Sıra | Model Mimarisi | Solo Onset Rec. | Solo Pitch F1 | Solo Strict F1 | Comp Onset Rec. | Comp Pitch F1 | Comp Strict F1 | Ortalama İşlem Süresi |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 🥇 | **YourMT3+ (Transformer)** | %86.3 | **%90.8** | **%81.9** | %86.3 | **%85.9** | **%73.9** | 1.63s (GPU) |
@@ -128,6 +130,8 @@ Omnizart Stream modu, CPU üzerinde ~13.5 saniye gibi yavaş bir süreyle çalı
 ---
 
 ## 🛠 Hangi Senaryoda Hangi Modeli Seçmelisiniz? (Kişisel Önerilerim)
+
+![Tablo 2: Model Seçim ve Karar Matrisi](./images/table-02-decision-matrix-tr.png)
 
 | Kullanım Senaryosu | Önerdiğim Model | Neden? |
 | :--- | :---: | :--- |
