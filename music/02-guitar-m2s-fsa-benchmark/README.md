@@ -1,9 +1,9 @@
 # 🎸 Guitar Fret-String Assignment (FSA) & MIDI-to-Score (M2S) Benchmark
 ## Biomechanical Viterbi vs. Graph Theory & Voicing Evaluated on NYU MARL GuitarSet
 
-This project contains the complete research, benchmark suite, evaluation pipelines, MusicXML generation engines, and publication-ready articles for solving the guitar's inverse 1-to-many fretboard mapping problem—**Fret-String Assignment (FSA)** and **MIDI-to-Score (M2S)**.
+This project contains the complete research, benchmark suite, evaluation pipelines, MusicXML generation engines, and publication-ready articles for investigating the guitar's inverse 1-to-many fretboard mapping problem—**Fret-String Assignment (FSA)** and **MIDI-to-Score (M2S)**.
 
-I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**, **tuttut**, and a naive greedy baseline) across 10 diverse musical tracks (5 solo melodies + 5 polyphonic chord comping tracks) comprising **1,489 physical hexaphonic ground-truth notes** from the **NYU MARL GuitarSet (ISMIR 2018)**. In addition, I coupled the winning FSA solver with `music21` to generate 30 dual-stave **W3C MusicXML 4.0** scores (Standard Staff + 6-line TAB) across both reference MIDI and transcribed audio (YourMT3+).
+I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**, **tuttut**, and a naive greedy baseline) across 10 diverse musical tracks (5 solo melodies + 5 polyphonic chord comping tracks) comprising **1,489 physical hexaphonic ground-truth notes** from the **NYU MARL GuitarSet (ISMIR 2018)**. In addition, I coupled the FSA algorithms with `music21` to generate 30 dual-stave **W3C MusicXML 4.0** scores (Standard Staff + 6-line TAB) across both reference MIDI and transcribed audio (YourMT3+).
 
 ---
 
@@ -46,10 +46,8 @@ I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**
 
 ---
 
-## 🏆 Key Benchmark Findings
+## 🔗 Internal Resources & Scores
 
-* 🥇 **gtrsnipe (Biomechanical Viterbi DP):** SOTA Champion with **61.0% String Accuracy** and **1.89 fret MAE** (peaking at **89.7%** on Rock comping and **74.6%** on solos).
-* 🥈 **GuitarArranger (Fretboard Voicing & GA):** Strongest chord voicer (**50.7% average**, peaking at **85.0%** on Bossa Nova fingerstyle).
-* 🥉 **tuttut (HMM & Graph Theory):** **28.2% String Accuracy** due to default open-string nut bias.
-* ⚠️ **Naive Importers (No FSA Control):** Catastrophic failure with **27.9% String Accuracy** (>72% error rate, dropping to 6.2% on solos).
-* 🎼 **Universal Open Standards:** 100% interoperability achieved using standard W3C MusicXML `<technical><string>` and `<fret>` elements natively rendered in desktop scorewriters and web browsers via OSMD.
+* 🎼 **W3C MusicXML Scores:** [`scores/`](./scores/)
+* 🎸 **Reference GuitarSet Ground Truth:** [`test_dataset/`](./test_dataset/)
+* 📊 **Evaluation & Metric Scripts:** [`scripts/evaluation/`](./scripts/evaluation/)
