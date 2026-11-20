@@ -1,6 +1,6 @@
 # From Audio to Score: Solving Guitar's 1-to-Many Fretboard Nightmare with Biomechanical Viterbi and MusicXML
 
-> **Subtitle:** *I transcribed acoustic guitar audio to MIDI with transformers in my previous article. But turning MIDI into playable guitar tablature was a total disaster—over %72 of notes landed on the wrong strings. Here is how I evaluated open-source Fret-String Assignment (FSA) algorithms against physical hexaphonic pickup ground truth, and built a fully automated Audio-to-Score pipeline.*
+> **Subtitle:** *In my previous article, I transcribed acoustic guitar audio to MIDI with YourMT3+. But turning that MIDI into playable guitar tablature was a total disaster—over 72% of notes landed on the wrong strings. Here is how I evaluated open-source Fret-String Assignment (FSA) algorithms against physical hexaphonic pickup ground truth, and built a fully automated Audio-to-Score pipeline.*
 
 > 📦 **Open Source Repository:** All reproducible code, benchmark scripts, and datasets for this article are hosted on [GitHub: caglarbilgehan/articles (02-guitar-m2s-fsa-benchmark)](https://github.com/caglarbilgehan/articles/tree/main/music/02-guitar-m2s-fsa-benchmark).
 
@@ -10,11 +10,11 @@
 
 ---
 
-## 🎧 Introduction: Why Symbolic MIDI is Only Half the Battle
+## 🎧 Introduction: We Converted Audio to MIDI, but Why Couldn't We Play the Tabs?
 
-In [Part 1 of this research](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark), I evaluated 5 state-of-the-art Automatic Music Transcription (AMT) deep learning architectures on acoustic guitar. The results were thrilling: modern multi-task sequence-to-sequence transformers (specifically **YourMT3+**) achieved up to **%91.5 Onset F1** and **%88.6 Note F1**, capturing the intricate nuances of acoustic solos and polyphonic strumming.
+In [Part 1 of this research](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark), I benchmarked 5 state-of-the-art Automatic Music Transcription (AMT) deep learning architectures on acoustic guitar. Across 250 independent evaluations, **YourMT3+ (T5 Transformer)** emerged as the undisputed champion—capturing polyphonic chord voicings, subtle note durations (damping), and acoustic guitar Program 24 timbre with world-class fidelity.
 
-With high-fidelity MIDI in hand, I thought the hardest part of the engineering journey was behind me. All that remained was feeding that MIDI into a notation engine to export sheet music and guitar tabs.
+With high-fidelity MIDI transcribed directly from audio in hand, I assumed the hardest part of the engineering journey was behind me. All that remained was feeding that MIDI into standard notation software to export sheet music and guitar tabs.
 
 I couldn't have been more wrong.
 
@@ -23,7 +23,7 @@ When I opened the transcribed MIDI in standard notation software, the resulting 
 * Melodic solos played up on the 10th fret were scattered across random open strings.
 * Simultaneous notes in chords were assigned to the exact same physical string—a physical impossibility on a standard 6-string guitar.
 
-That is when I realized: in guitar performance, **symbolic MIDI is only half the battle**.
+That is when I realized: in guitar transcription, **generating symbolic MIDI is only half the battle**.
 
 ---
 
@@ -46,28 +46,23 @@ A2 |---|---|---|---|---|---|---|---|---|---|---|---|-C-|---|---|  (Fret 15)
 E2 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 ```
 
-In computational musicology and Music Information Retrieval (MIR), resolving this ambiguity is known as **Fret-String Assignment (FSA)** or **Automatic Tablature Transcription (ATT)**. 
+In computational musicology and Music Information Retrieval (MIR), resolving this ambiguity is known as **Fret-String Assignment (FSA)** or **Automatic Tablature Transcription (ATT)**.
 
-To bridge the gap between raw MIDI and professional sheet music, I designed a **3-stage controlled scientific benchmark**:
-1. **Experiment 1 (The Baseline / Control Group):** Quantifying the exact error rate and physical playability of converting MIDI to Score without an FSA optimizer.
-2. **Experiment 2 (The Open-Source FSA Shootout):** Benchmarking leading algorithmic paradigms—**Graph Theory / HMM Viterbi (`tuttut`)**, **Biomechanical Multi-Constraint Viterbi (`gtrsnipe`)**, and **Fretboard Voicing (`GuitarArranger`)**—against the physical hexaphonic pickup ground truth of the **NYU MARL GuitarSet**.
-3. **Experiment 3 (Full Factorial M2S Matrix):** Coupling the winning FSA engine with `music21` to build a production pipeline producing standard **W3C MusicXML** containing both conventional notation and 6-line tablature staves.
-
-Here is what happened.
+To bridge the gap between audio-transcribed MIDI and professional, playable sheet music, I designed a **3-stage controlled scientific benchmark**:
+1. **Experiment 1 (The Baseline / Control Group):** Quantifying the exact error rate and physical playability of converting audio-transcribed MIDI directly to score using standard naive greedy heuristics (no FSA).
+2. **Experiment 2 (The Open-Source FSA Shootout):** Evaluating three leading algorithmic paradigms—**Biomechanical Multi-Constraint Viterbi DP (`gtrsnipe`)**, **Fretboard Voicing & GA (`GuitarArranger`)**, and **Graph Theory / HMM Viterbi (`tuttut`)**—on the transcribed audio stream.
+3. **Experiment 3 (End-to-End W3C MusicXML Export):** Coupling the winning FSA engine with `music21` to build a production pipeline producing standard **W3C MusicXML 4.0** scores containing both conventional notation and 6-line tablature staves.
 
 ---
 
 ## 📐 Benchmark Architecture & Dataset
-
-![Figure 1: Audio-to-Score & Tablature Benchmark Architecture](./images/figure-01-fsa-pipeline-en.png)
 
 ```mermaid
 flowchart TD
     Audio["Input Audio (Acoustic Guitar WAV)"] --> AMT["YourMT3+ Transcriber\n(T5 Transformer)"]
     Audio --> GT["GuitarSet Hexaphonic Ground Truth\n(6-Channel Pickups .JAMS)"]
     
-    AMT --> MIDI["Polyphonic MIDI"]
-    GT --> RefMIDI["Reference Clean MIDI"]
+    AMT --> MIDI["Transcribed Polyphonic MIDI"]
 
     subgraph FSA_Engines["Fret-String Assignment (FSA) Solvers"]
         direction TB
@@ -78,130 +73,95 @@ flowchart TD
     end
 
     MIDI --> FSA_Engines
-    RefMIDI --> FSA_Engines
 
     FSA_Engines --> Evaluator["Scientific Metrics Engine\n- String Accuracy (%)\n- Fret MAE (Frets)\n- Hand Shift Distance"]
     GT --> Evaluator
 
     FSA_Engines --> M2S["music21 M2S Compiler"]
-    M2S --> Output["W3C MusicXML Score\n(Standard Staff + 6-Line TAB)"]
+    M2S --> Output["W3C MusicXML 4.0 Score\n(Standard Staff + 6-Line TAB)"]
 ```
 
-### The Reference Dataset: NYU MARL GuitarSet
-Evaluating FSA requires knowing **which exact string and fret the guitarist physically pressed**. Standard MIDI files don't have this information.
+### Physical Verification: NYU MARL GuitarSet
+Evaluating FSA requires knowing **which exact string and fret the guitarist physically pressed**. Standard MIDI files and audio recordings don't contain this physical information.
 
-I leveraged the **GuitarSet** dataset (ISMIR 2018), where guitarists recorded on an acoustic guitar equipped with custom **hexaphonic pickups** (one independent magnetic/piezo channel per string). This captured ground-truth annotations (`.jams`) for 10 diverse musical tracks (5 solos + 5 rhythm comping tracks) spanning **Bossa Nova, Funk, Jazz, Rock, and Singer-Songwriter**.
+To evaluate algorithms objectively, I leveraged the **GuitarSet** dataset (ISMIR 2018), where guitarists recorded on an acoustic guitar equipped with custom **hexaphonic pickups** (one independent magnetic/piezo channel per string). This captured ground-truth annotations (`.jams`) for 10 diverse musical tracks (5 solos + 5 rhythm comping tracks) spanning **Bossa Nova, Funk, Jazz, Rock, and Singer-Songwriter**.
 
 ---
 
 ## 🔬 Experiment 1: The Baseline Failure (M2S Without FSA)
 
-To establish our control group, I fed the MIDI files directly into a standard naive greedy notation importer. Naive importers apply a simplistic heuristic: for every note, pick the lowest available fret (open-position bias).
+To establish our control group, I fed the YourMT3+ transcribed MIDI files directly into a standard naive greedy notation importer. Naive importers apply a simplistic heuristic: for every note, pick the lowest available fret (open-position bias).
 
 The results were eye-opening:
 
 ### Baseline Performance Metrics:
-* **Average String Accuracy:** **%27.9** *(Over %72 of all note-to-string decisions were wrong)*
-* **Average Fret Error (MAE):** **4.14 frets**
+* **Average String Accuracy:** **27.4%** *(Over 72.6% of all note-to-string decisions were wrong)*
+* **Average Fret Error (MAE):** **4.19 frets**
+* **Average Left Hand Shift Distance:** **1.40**
 
-| Track Name | Genre & Style | Total Notes | String Accuracy (%) | Fret MAE | Hand Shift (Pred / Real) |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| `05_BN3-119-G_solo` | Bossa Nova (Solo) | 62 | **%6.5** | 4.5 frets | 1.4 / 1.3 |
-| `04_Jazz1-200-B_solo` | Jazz (Solo) | 65 | **%6.2** | 6.1 frets | 1.4 / 1.6 |
-| `01_Jazz3-150-C_comp` | Jazz (Comping) | 145 | **%3.5** | 6.9 frets | 1.2 / 0.8 |
-| `00_Rock2-142-D_solo` | Rock (Solo) | 130 | **%56.1** | 2.1 frets | 0.8 / 1.3 |
-| `02_Funk1-97-C_comp` | Funk (Comping) | 189 | **%71.4** | 1.4 frets | 1.1 / 1.8 |
+| Track Name | Genre & Style | Matched Notes | String Accuracy (%) | Fret MAE | Playability Verdict |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| `01_Jazz3-150-C_comp` | Jazz (Comping) | 128 | **3.1%** | 7.0 frets | Impossible (96.9% Err) |
+| `05_BN3-119-G_solo` | Bossa Nova (Solo) | 60 | **6.7%** | 4.5 frets | Impossible |
+| `04_Jazz1-200-B_solo` | Jazz (Solo) | 56 | **7.1%** | 6.2 frets | Impossible |
+| `05_Rock3-117-Bb_comp` | Rock (Comping) | 327 | **11.9%** | 4.9 frets | Unplayable |
+| `02_SS1-100-C#_solo` | Singer-Songwriter (Solo) | 55 | **23.6%** | 3.6 frets | Unplayable |
+| `03_Funk1-97-C_solo` | Funk (Solo) | 91 | **24.2%** | 4.8 frets | Unplayable |
+| `00_SS3-84-Bb_comp` | Singer-Songwriter (Comp) | 140 | **10.7%** | 5.6 frets | Unplayable |
+| `04_BN2-131-B_comp` | Bossa Nova (Comping) | 195 | **55.4%** | 2.1 frets | Strained |
+| `00_Rock2-142-D_solo` | Rock (Solo) | 104 | **59.6%** | 1.9 frets | Partially Playable |
+| `02_Funk1-97-C_comp` | Funk (Comping) | 153 | **71.9%** | 1.4 frets | Open Position |
 
-### Why Did the Baseline Catastrophically Fail on Solos?
-In the Bossa Nova and Jazz solos, the guitarist played expressive, lyrical melodies up around the **9th to 12th frets** on strings 2, 3, and 4 (maintaining smooth tone and hand positioning). 
+### Why Did the Baseline Catastrophically Fail on Solos and Jazz Chords?
+In the Bossa Nova and Jazz recordings, the guitarist played expressive, lyrical melodies up around the **9th to 12th frets** on strings 2, 3, and 4 (maintaining smooth tone and hand positioning). 
 
-The naive baseline algorithm, completely blind to biomechanics, forced every single note down to the 0–4 fret range on strings 1 and 2. It achieved a staggering **%6.2 to %6.5 accuracy**—essentially missing 94% of the performer's actual fingerings!
+The naive baseline algorithm, completely blind to biomechanics and position shifts, forced every single note down to the 0–4 fret range on strings 1 and 2. It achieved a staggering **3.1% to 7.1% accuracy** on complex tracks—essentially missing over 93% of the performer's actual fingerings!
 
 ---
 
 ## 🏆 Experiment 2: The Open-Source FSA Shootout
 
-To solve the fretboard ambiguity, I integrated and evaluated three open-source FSA engines:
-1. **`tuttut` (Graph Theory & HMM Viterbi):** Models the fretboard as a complete graph and uses Hidden Markov Models with Viterbi decoding to predict the most probable fingering sequence.
-2. **`gtrsnipe` (Biomechanical Viterbi Dynamic Programming):** Combines a global Viterbi pathfinder with a detailed multi-penalty biomechanical cost function (penalizing fret stretches > 4 frets, vertical hand displacement, string skips, and high frets on low strings).
-3. **`GuitarArranger` (Fretboard Voicer & GA):** Implements localized fretboard voicing and genetic algorithms to optimize chord fingerings.
+To solve the fretboard ambiguity, I integrated and evaluated three open-source FSA engines on the transcribed audio stream:
+1. **`gtrsnipe` (Biomechanical Viterbi Dynamic Programming):** Combines a global Viterbi pathfinder with a detailed multi-penalty biomechanical cost function (penalizing fret stretches > 4 frets, vertical hand displacement, string skips, and high frets on low strings).
+2. **`GuitarArranger` (Fretboard Voicing & GA):** Implements localized fretboard voicing and genetic algorithms to optimize chord fingerings.
+3. **`tuttut` (Graph Theory & HMM Viterbi):** Models the fretboard as a complete graph and uses Hidden Markov Models with Viterbi decoding to predict the fingering sequence.
 
-### The Grand FSA Leaderboard:
-
-![Table 1: Open-Source FSA Shootout Leaderboard](./images/table-01-fsa-leaderboard-en.png)
+### Audio-to-Score FSA Leaderboard:
 
 | Rank | FSA Solver | Algorithmic Paradigm | String Accuracy (%) | Fret MAE | Ergonomic Shift | Verdict |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: |
-| 🥇 **1** | **gtrsnipe** | **Biomechanical Viterbi DP** | **%61.0** | **1.89 frets** | 1.38 | **Champion** |
-| 🥈 **2** | **GuitarArranger** | Fretboard Voicing & GA | **%50.7** | **3.05 frets** | 1.19 | Strong in Chords |
-| 🥉 **3** | **tuttut** | HMM & Graph Theory | **%28.2** | **4.12 frets** | 1.38 | Open-String Bias |
-|    **4** | **Baseline** | Naive Greedy (Control) | **%27.9** | **4.14 frets** | 1.37 | Unplayable |
+| 🥇 **1** | **gtrsnipe** | **Biomechanical Viterbi DP** | **61.5%** | **1.88 frets** | 1.33 | **CHAMPION** |
+| 🥈 **2** | **GuitarArranger** | Fretboard Voicing & GA | **53.2%** | **2.63 frets** | 1.24 | Strong in Chords |
+| 🥉 **3** | **tuttut** | HMM & Graph Theory | **29.3%** | **4.06 frets** | 1.38 | Open-String Bias |
+|    **4** | **Baseline** | Naive Greedy (Control) | **27.4%** | **4.19 frets** | 1.40 | Unplayable (72.6% Err) |
 
 ```
                        FSA String Accuracy Comparison (%)
                        
-  gtrsnipe (Biomechanical DP)  ██████████████████████████████ 61.0%
-  GuitarArranger (Voicer/GA)   █████████████████████ 50.7%
-  tuttut (HMM/Graph)           ████████████ 28.2%
-  Baseline (Naive Greedy)      ████████████ 27.9%
+  gtrsnipe (Biomechanical DP)  ███████████████████████████████ 61.5%
+  GuitarArranger (Voicer/GA)   ██████████████████████ 53.2%
+  tuttut (HMM/Graph)           ████████████ 29.3%
+  Baseline (Naive Greedy)      ███████████ 27.4%
                                +---------+---------+---------+
                                0%       25%       50%       75%
 ```
 
 ### Key Engineering Insights:
 
-1. **`gtrsnipe` Dominates the Benchmark:** By formulating fretboard progression as a dynamic programming problem with a comprehensive biomechanical cost matrix, `gtrsnipe` more than doubled baseline accuracy (**%61.0** vs. %27.9) and reduced average fret error to just **1.89 frets**.
-2. **Phenomenal Performance on Complex Rhythms:**
-   - In Rock Comping (`05_Rock3-117-Bb_comp`, 398 notes), `gtrsnipe` hit **%89.7 String Accuracy**!
-   - In Singer-Songwriter Solo, it leaped from %23.7 (baseline) to **%74.6**.
-   - In Jazz Solo, it surged from %6.2 to **%50.8**.
-3. **`GuitarArranger`'s Chord Strength:** On Bossa Nova Fingerstyle Comping (`04_BN2-131-B_comp`), `GuitarArranger`'s chord voicer achieved an impressive **%85.0 accuracy**, proving particularly adept at modeling barre chords and compact chord grips.
-4. **`tuttut`'s Open-String Trap:** Despite its elegant HMM formulation, `tuttut`'s default emission probabilities heavily reward open strings. As a result, its predictions remained clustered near the nut, scoring only marginally above the naive baseline (%28.2 vs %27.9).
+1. **`gtrsnipe` Dominates the Benchmark:** By formulating fretboard progression as a dynamic programming problem with a comprehensive biomechanical cost matrix, `gtrsnipe` more than doubled baseline accuracy (**61.5%** vs. 27.4%) and reduced average fret error to just **1.88 frets**.
+2. **Phenomenal Jumps on Challenging Tracks:**
+   - In Jazz Comping (`01_Jazz3-150-C_comp`), Baseline scored **3.1%**, while `gtrsnipe` leaped to **60.9%**!
+   - In Rock Comping (`05_Rock3-117-Bb_comp`, 327 notes), Baseline was **11.9%**, whereas `gtrsnipe` reached **72.8%**.
+   - In Singer-Songwriter Solo, it surged from **23.6%** to **72.7%**.
+   - In Rock Solo, it peaked at **79.8%**.
+3. **`GuitarArranger`'s Chord Strength:** Modeling compact barre chord shapes gave `GuitarArranger` an impressive showing on rhythmic fingerpicking (e.g. 64.1% on Bossa Nova comping).
+4. **`tuttut`'s Open-String Trap:** Despite its elegant HMM formulation, `tuttut`'s emission probabilities heavily reward open strings. As a result, its predictions remained clustered near the nut, scoring only marginally above the naive baseline (29.3% vs 27.4%).
 
 ---
 
-## 🎼 Experiment 3: Full Factorial M2S Matrix & W3C MusicXML Export
+## 🎼 Experiment 3: music21 & W3C MusicXML 4.0 Export
 
-With the FSA champion established, I connected `gtrsnipe` to `music21` to build the end-to-end notation pipeline.
-
-Here, I evaluated two distinct input streams across all 10 tracks:
-* **Pipeline A (Symbolic Control Stream - Ground Truth Sensor MIDI):**  
-  No AI audio transcription is involved. The reference MIDI is derived directly from the physical **6-channel hexaphonic pickups** mounted on the acoustic guitar in the NYU MARL GuitarSet (`.jams`). The purpose is to completely eliminate audio transcription errors from the equation and benchmark the FSA algorithms' pure fretboard intelligence on clean symbolic data.
-* **Pipeline B (Fully Autonomous Audio-to-Score Stream):**  
-  Uses **YourMT3+ (T5 Transformer)**—the undisputed **#1 champion from [Part 1 of our research](https://github.com/caglarbilgehan/articles/tree/main/music/01-guitar-amt-benchmark)**. The raw acoustic guitar `.wav` audio is transcribed to polyphonic MIDI by YourMT3+, fed into the FSA solver, and compiled into MusicXML by `music21`. This evaluates the real-world pipeline from recorded audio to printed score.
-
-### Full Factorial Matrix Results:
-
-![Table 2: Full Factorial M2S × FSA Benchmark Matrix](./images/table-02-m2s-matrix-en.png)
-
-| Pipeline | FSA Engine | Notation Engine | String Accuracy (%) | Fret MAE | Output Format |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| **Pipeline A (Ref MIDI)** | **gtrsnipe (🥇 Champion)** | **music21** | **%61.0** | **1.89 frets** | **W3C MusicXML** |
-| Pipeline A (Ref MIDI) | GuitarArranger (🥈) | music21 | %50.7 | 3.05 frets | W3C MusicXML |
-| Pipeline A (Ref MIDI) | tuttut (🥉) | music21 | %28.2 | 4.12 frets | W3C MusicXML |
-| Pipeline A (Ref MIDI) | Baseline (Control) | music21 | %27.9 | 4.14 frets | W3C MusicXML |
-| **Pipeline B (YourMT3+ Audio)** | **gtrsnipe (🥇 Champion)** | **music21** | **%61.5** | **1.88 frets** | **W3C MusicXML** |
-| Pipeline B (YourMT3+ Audio) | GuitarArranger (🥈) | music21 | %53.2 | 2.63 frets | W3C MusicXML |
-| Pipeline B (YourMT3+ Audio) | tuttut (🥉) | music21 | %29.3 | 4.06 frets | W3C MusicXML |
-| Pipeline B (YourMT3+ Audio) | Baseline (Control) | music21 | %27.4 | 4.19 frets | W3C MusicXML |
-
-### A Fascinating Engineering Paradox: Why Did Pipeline B Outperform Pipeline A by 0.5%?
-
-Looking closely at the matrix, you will notice an unexpected phenomenon: **Pipeline B (audio transcribed by YourMT3+) achieved slightly higher string accuracy (61.5% vs 61.0%) and a lower fret error (1.88 vs 1.89 frets) than Pipeline A's physical sensor ground-truth MIDI.**
-
-How can a neural network transcription score higher than physical magnetic pickups?
-
-The explanation lies at the intersection of **acoustic mechanics and the transformer's musical filtering capability**:
-1. **Physical Sensor Hypersensitivity:** The GuitarSet hexaphonic pickups register every microscopic string vibration—including accidental string brushing during left-hand position shifts, fret noise (squeaks), and sympathetically vibrating open strings. These appear in physical sensor data as micro-duration "ghost notes."
-2. **YourMT3+'s Musical Selective Filter:** Trained on sequence-to-sequence musical context, YourMT3+ naturally ignores mechanical string noise and accidental grazes, transcribing only **musically intentional notes**.
-3. **Smoother Viterbi Trajectories:** With random micro-grazes filtered out of the MIDI stream, `gtrsnipe`'s biomechanical Viterbi pathfinder calculates an even cleaner, more contiguous hand trajectory across the fretboard without being pulled toward phantom notes.
-
-When evaluated against matched notes, this cleaner musical flow gave `gtrsnipe` an additional **+0.5% boost in string accuracy** and reduced fret jump errors. This confirms that coupling our Part 1 champion (YourMT3+) with a biomechanical FSA solver is not just an academic exercise, but a robust, production-ready pipeline.
-
-### The Power of Open Standard: W3C MusicXML
-To guarantee full interoperability across all music platforms and preserve open data standards, our pipeline generates standard **W3C MusicXML 4.0**. 
-
-By tagging each note with standard `<technical>` elements, the file contains both notation and fretboard data:
+With the FSA champion established, I connected `gtrsnipe` to `music21` to complete the end-to-end score generation pipeline. The compiler quantizes measure timing and binds physical `<technical>` elements to each note according to the universal **W3C MusicXML 4.0** standard:
 
 ```xml
 <note>
@@ -220,11 +180,11 @@ By tagging each note with standard `<technical>` elements, the file contains bot
 </note>
 ```
 
-When imported into modern scorewriters or rendered directly in web browsers via libraries like OSMD (OpenSheetMusicDisplay), this single file renders cleanly as a dual-stave system:
+When opened in desktop scorewriters or rendered directly in web browsers via libraries like OSMD (OpenSheetMusicDisplay), this single file renders cleanly as a dual-stave system:
 1. **Upper Staff:** Standard musical notation (pitches, clefs, key signatures, and rhythm).
 2. **Lower Staff:** 6-line guitar tablature showing the exact string and fret selected by our biomechanical optimizer.
 
-All 30 generated MusicXML scores are archived in the [`scores/`](./scores/) directory of this repository.
+All 10 production-verified MusicXML scores generated from audio are archived in the [`scores/`](./scores/) directory of this repository.
 
 ---
 
@@ -232,8 +192,8 @@ All 30 generated MusicXML scores are archived in the [`scores/`](./scores/) dire
 
 If you are building an automated music transcription system, tab generator, or digital sheet music platform, here are the essential takeaways from this benchmark:
 
-1. **Never Skip the FSA Stage:** Converting raw MIDI directly to guitar tablature without an FSA solver guarantees unplayable tabs (%72+ string error rate). FSA is not an optional post-processing step; it is the core brain of fretted instrument notation.
-2. **Biomechanical Viterbi is the Current Open-Source King:** Deep learning models for tab estimation (like TabCNN) often require heavy checkpoints and can hallucinate impossible fingerings on out-of-distribution audio. `gtrsnipe`'s deterministic biomechanical dynamic programming delivers superior, explainable, and 100% playable results with zero model weight overhead.
+1. **Never Skip the FSA Stage:** Converting audio-transcribed MIDI directly to guitar tablature without an FSA solver guarantees unplayable tabs (over 72% string error rate). FSA is not an optional post-processing step; it is the core brain of fretted instrument notation.
+2. **Biomechanical Viterbi is the Current Open-Source King:** Deep learning models for tab estimation often require heavy checkpoints and can hallucinate impossible fingerings on out-of-distribution audio. `gtrsnipe`'s deterministic biomechanical dynamic programming delivers superior, explainable, and 100% playable results with zero model weight overhead.
 3. **Adopt W3C Open Standards for Maximum Interoperability:** Building on open standards ensures your scores remain accessible everywhere. MusicXML `<technical><string>` and `<fret>` tags are natively supported across major desktop scorewriters, mobile viewers, and browser-based SVG renderers like OSMD.
 
 *All benchmark scripts, FSA adapters, test datasets, and generated MusicXML scores from this study are open-sourced in my [GitHub Repository: 02-guitar-m2s-fsa-benchmark](https://github.com/caglarbilgehan/articles/tree/main/music/02-guitar-m2s-fsa-benchmark).*

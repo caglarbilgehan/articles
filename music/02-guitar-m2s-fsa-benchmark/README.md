@@ -3,7 +3,7 @@
 
 This project contains the complete research, benchmark suite, evaluation pipelines, MusicXML generation engines, and publication-ready articles for investigating the guitar's inverse 1-to-many fretboard mapping problem—**Fret-String Assignment (FSA)** and **MIDI-to-Score (M2S)**.
 
-I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**, **tuttut**, and a naive greedy baseline) across 10 diverse musical tracks (5 solo melodies + 5 polyphonic chord comping tracks) comprising **1,489 physical hexaphonic ground-truth notes** from the **NYU MARL GuitarSet (ISMIR 2018)**. In addition, I coupled the FSA algorithms with `music21` to generate 30 dual-stave **W3C MusicXML 4.0** scores (Standard Staff + 6-line TAB) across both reference MIDI and transcribed audio (YourMT3+).
+I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**, **tuttut**, and a naive greedy baseline) across 10 diverse musical tracks (5 solo melodies + 5 polyphonic chord comping tracks) comprising **1,489 physical hexaphonic ground-truth notes** from the **NYU MARL GuitarSet (ISMIR 2018)**. In addition, I coupled the winning FSA solver with `music21` to generate production dual-stave **W3C MusicXML 4.0** scores (Standard Staff + 6-line TAB) directly from the transcribed audio stream.
 
 ---
 
