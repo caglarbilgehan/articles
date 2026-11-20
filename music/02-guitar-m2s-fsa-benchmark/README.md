@@ -34,14 +34,17 @@ I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**
 ├── images/                 # High-resolution visual cards, pipeline diagrams & cover art
 │   ├── article-image.jpg   # Publication cover hero image
 │   ├── figure-01-fsa-pipeline-en.png / .tr.png
-│   ├── table-01-fsa-leaderboard-en.png / .tr.png
-│   └── table-02-m2s-matrix-en.png / .tr.png
-├── scores/                 # 30 production W3C MusicXML scores (Standard Notation + 6-Line TAB)
-├── test_dataset/           # 10 GuitarSet ground-truth hexaphonic sensor annotations (.jams)
+│   └── table-01-fsa-leaderboard-en.png / .tr.png
+├── scores/                 # 20 verified W3C MusicXML scores (gtrsnipe vs. baseline on YourMT3+)
+├── test_dataset/
+│   ├── yourmt3_midi/       # 10 audio-transcribed MIDIs from YourMT3+ (Benchmark input)
+│   └── ground_truth_jams/  # 10 GuitarSet physical hexaphonic pickup annotations (.jams)
 └── scripts/                # Standalone reproducible evaluation & metric calculation scripts
+    ├── evaluate_benchmark.py # One-click evaluation runner
     └── evaluation/
         ├── jams_reader.py  # Hexaphonic pickup ground-truth parser
-        └── fsa_metrics.py  # String Accuracy, Fret MAE, and ergonomic shift calculators
+        ├── fsa_metrics.py  # String Accuracy, Fret MAE, and ergonomic shift calculators
+        └── baseline_m2s.py # Naive greedy converter implementation
 ```
 
 ---
@@ -49,5 +52,5 @@ I evaluated leading open-source FSA algorithms (**gtrsnipe**, **GuitarArranger**
 ## 🔗 Internal Resources & Scores
 
 * 🎼 **W3C MusicXML Scores:** [`scores/`](./scores/)
-* 🎸 **Reference GuitarSet Ground Truth:** [`test_dataset/`](./test_dataset/)
-* 📊 **Evaluation & Metric Scripts:** [`scripts/evaluation/`](./scripts/evaluation/)
+* 🎸 **Benchmark Dataset (YourMT3+ MIDIs & Ground Truth):** [`test_dataset/`](./test_dataset/)
+* 📊 **Evaluation & Metric Scripts:** [`scripts/`](./scripts/)
