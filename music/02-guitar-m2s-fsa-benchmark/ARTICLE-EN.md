@@ -81,10 +81,19 @@ flowchart TD
     M2S --> Output["W3C MusicXML 4.0 Score\n(Standard Staff + 6-Line TAB)"]
 ```
 
-### Physical Verification: NYU MARL GuitarSet
-Evaluating FSA requires knowing **which exact string and fret the guitarist physically pressed**. Standard MIDI files and audio recordings don't contain this physical information.
+### Input Dataset: Why YourMT3+ Transcriptions from Part 1?
+In this study, our objective was not to test sterile, hand-crafted synthetic MIDI files, but to work with **real-world audio-transcribed MIDI** containing natural acoustic onset micro-timing and duration jitter.
 
-To evaluate algorithms objectively, I leveraged the **GuitarSet** dataset (ISMIR 2018), where guitarists recorded on an acoustic guitar equipped with custom **hexaphonic pickups** (one independent magnetic/piezo channel per string). This captured ground-truth annotations (`.jams`) for 10 diverse musical tracks (5 solos + 5 rhythm comping tracks) spanning **Bossa Nova, Funk, Jazz, Rock, and Singer-Songwriter**.
+In my first article, I subjected 5 deep learning AMT models to 250 independent evaluations, proving that the **YourMT3+** T5 transformer architecture achieved state-of-the-art guitar transcription performance. Rather than wasting compute re-running audio transcription from scratch, we directly adopted the 10 YourMT3+ transcribed MIDI outputs from Part 1 as our primary benchmark input dataset (`test_dataset/yourmt3_midi/`).
+
+Furthermore, because YourMT3+ uses greedy (argmax) decoding during inference, all 5 independent evaluation runs from Benchmark 1 produced **100% bit-for-bit identical MIDI outputs (verified via SHA-256 checksums)**. This provides a strictly deterministic, reproducible, and standardized baseline for our downstream evaluations.
+
+### Physical Ground Truth: Why the .jams Format is Indispensable
+Evaluating FSA algorithms objectively requires knowing **which exact string and fret the guitarist physically pressed**. Standard MIDI files and audio recordings only capture pitch, timestamps, and velocity; they **do not encode** physical fretboard positions (e.g., whether middle C was fretted on String 2 Fret 1 or String 3 Fret 5).
+
+To grade algorithm predictions against reality, I leveraged the **NYU MARL GuitarSet** dataset (ISMIR 2018). In GuitarSet, guitarists recorded on an acoustic guitar equipped with custom **hexaphonic pickups** (one dedicated magnetic/piezo channel per string). Each string's vibration was recorded independently, capturing millisecond-accurate physical ground truth annotations (`.jams`). The FSA string-fret assignments produced by our engines were compared directly against these `.jams` records to calculate scientific metrics.
+
+Evaluations were performed across 10 diverse tracks (5 solo melodies + 5 rhythm comping tracks) spanning **Bossa Nova, Funk, Jazz, Rock, and Singer-Songwriter**.
 
 ---
 

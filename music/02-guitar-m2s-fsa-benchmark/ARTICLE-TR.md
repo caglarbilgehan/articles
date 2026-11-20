@@ -81,10 +81,17 @@ flowchart TD
     M2S --> Output["W3C MusicXML 4.0 Skoru\n(Standart Porte + 6 Telli TAB)"]
 ```
 
-### Zemin Gerçeği Doğrulaması: NYU MARL GuitarSet
-FSA motorlarının başarısını ölçmek için gitaristin **gerçekte hangi tele ve hangi perdeye bastığını** kesin olarak bilmemiz gerekir. Standart MIDI veya ses dosyalarında bu bilgi yer almaz.
+### Girdi Veri Kümesi: Neden İlk Çalışmanın YourMT3+ Çıktıları?
+Bu araştırmada amacımız, laboratuvarda elle yazılmış steril ve kusursuz MIDI'lerle değil; **gerçek dünyada sesten transkribe edilmiş** doğal zamanlama ve süre sapmalarına sahip MIDI verileriyle çalışmaktı.
 
-Bu doğrulamayı yapabilmek için New York Üniversitesi MARL laboratuvarının yayımladığı **GuitarSet** veri kümesini kullandım. Bu veri setinde gitaristlerin çaldığı akustik gitarın her teline özel **hexaphonic (6 bağımsız kanal) manyetikler** takılmıştır. Böylece her telin titreşimi birbirinden bağımsız kaydedilmiş ve insan gitaristin vurduğu teller `.jams` formatında milisaniyelik zemin gerçeği (Ground Truth) olarak belgelenmiştir.
+İlk makalemde 5 farklı derin öğrenme modelini 250 bağımsız testten geçirmiş ve **YourMT3+** mimarisinin en yüksek transkripsiyon başarısına ulaştığını kanıtlamıştım. Dolayısıyla ses transkripsiyonunu sıfırdan tekrar koşturarak kaynak israfı yapmak yerine, ilk çalışmada elde ettiğimiz YourMT3+ MIDI çıktılarını doğrudan bu benchmarkın girdi veri kümesi (`test_dataset/yourmt3_midi/`) olarak kullandık. 
+
+Ayrıca YourMT3+ çıkarımı sırasında açgözlü (greedy / argmax) kod çözme kullandığından, ilk çalışmada yapılan 5 bağımsız turun tamamı **%100 bit-bit özdeş çıktı üretmiştir (SHA-256 ile doğrulanmıştır)**. Bu sayede deneylerimiz tam deterministik, matematiksel olarak kararlı ve tekilleştirilmiş bir girdi akışı üzerine oturmuştur.
+
+### Zemin Gerçeği Doğrulaması: .jams Formatı Neden Vazgeçilmez?
+FSA motorlarının başarısını objektif olarak ölçmek için gitaristin **gerçekte hangi tele ve hangi perdeye bastığını** kesin olarak bilmemiz gerekir. Standart bir MIDI dosyasında yalnızca nota perdesi (pitch), başlama/bitiş anı ve tuşe şiddeti (velocity) bulunur; ancak bu notanın 2. tel 1. perdede mi yoksa 3. tel 5. perdede mi çalındığı bilgisi fiziksel olarak MIDI'de **yer almaz**.
+
+Bu doğrulamayı yapabilmek için New York Üniversitesi MARL laboratuvarının yayımladığı **GuitarSet** veri kümesini kullandım. Bu veri setinde gitaristlerin çaldığı akustik gitarın her teline özel **hexaphonic (6 bağımsız kanal) manyetikler** takılmıştır. Böylece her telin titreşimi birbirinden bağımsız kaydedilmiş ve insan gitaristin vurduğu teller `.jams` formatında milisaniyelik fiziksel zemin gerçeği (Ground Truth) olarak belgelenmiştir. FSA çözücülerimizin ürettiği tel-perde kararları, bu `.jams` verileriyle birebir karşılaştırılarak notalandırılmıştır.
 
 Testlerimi **Bossa Nova, Funk, Jazz, Rock ve Singer-Songwriter** türlerinde hem solo melodileri hem de polifonik akor eşliklerini içeren 10 farklı parça üzerinde koşturdum.
 
